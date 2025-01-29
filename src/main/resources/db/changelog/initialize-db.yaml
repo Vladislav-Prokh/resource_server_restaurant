@@ -1,0 +1,178 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1"
+      author: postgres
+      changes:
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: employee_name
+                  value: "test_waiter"
+              - column:
+                  name: employee_surname
+                  value: "waiter_surname"
+              - column:
+                  name: employee_email
+                  value: "waiter_email@gmai.com"
+              - column:
+                  name: employee_role
+                  value: "WAITER"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM employees"
+
+  - changeSet:
+      id: "2"
+      author: postgres
+      changes:
+        - insert:
+            tableName: desserts
+            columns:
+              - column:
+                  name: dessert_name
+                  value: "Chocolate Cake"
+              - column:
+                  name: dessert_price
+                  value: "6.0"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM desserts"
+
+  - changeSet:
+      id: "3"
+      author: postgres
+      changes:
+        - insert:
+            tableName: meals
+            columns:
+              - column:
+                  name: meal_name
+                  value: "grilled chicken breast"
+              - column:
+                  name: meal_price
+                  value: "12.0"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM meals"
+
+  - changeSet:
+      id: "4"
+      author: postgres
+      changes:
+        - insert:
+            tableName: lunches
+            columns:
+              - column:
+                  name: meal_id
+                  value: "1"
+              - column:
+                  name: dessert_id
+                  value: "1"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM lunches"
+
+  - changeSet:
+      id: "5"
+      author: postgres
+      changes:
+        - insert:
+            tableName: beverage_additionals
+            columns:
+              - column:
+                  name: beverage_additional_name
+                  value: "ice"
+              - column:
+                  name: beverage_additional_price
+                  value: "0.1"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM beverage_additionals"
+
+  - changeSet:
+      id: "6"
+      author: postgres
+      changes:
+        - insert:
+            tableName: beverages
+            columns:
+              - column:
+                  name: beverage_name
+                  value: "coke"
+              - column:
+                  name: beverage_price
+                  value: "0.99"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM beverages"
+            
+  - changeSet:
+      id: "7"
+      author: postgres
+      changes:
+        - insert:
+            tableName: orders
+            columns:
+              - column:
+                  name: created_at
+                  value: "coke"
+              - column:
+                  name: beverage_price
+                  value: "0.99"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM beverages"
+  - changeSet:
+      id: "8"
+      author: postgres
+      changes:
+        - insert:
+            tableName: orders
+            columns:
+              - column:
+                  name: created_at
+                  value: "2024-12-02T12:00:00"  
+              - column:
+                  name: main_course_price
+                  value: "12.0"
+              - column:
+                  name: dessert_price
+                  value: "6.0"
+              - column:
+                  name: beverage_price
+                  value: "0.99"
+              - column:
+                  name: lunch_id
+                  value: "1"
+              - column:
+                  name: main_course_cuisine
+                  value: "Polish"
+              - column:
+                  name: dessert_cuisine
+                  value: "Polish"  
+              - column:
+                  name: beverage_id
+                  value: "1" 
+              - column:
+                  name: employee_id
+                  value: "1"
+      preConditions:
+        - onFail: CONTINUE
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM orders"

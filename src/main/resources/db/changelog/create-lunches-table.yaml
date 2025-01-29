@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-lunches-table
+      author: Prokhovich Vladislav
+      changes:
+        - createTable:
+            tableName: lunches
+            columns:
+              - column:
+                  name: lunch_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: meal_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: dessert_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: add-foreign-keys
+      author: Prokhovich Vladislav
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: lunches
+            baseColumnNames: meal_id
+            constraintName: fk_lunch_meal
+            referencedTableName: meals
+            referencedColumnNames: meal_id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: lunches
+            baseColumnNames: dessert_id
+            constraintName: fk_lunch_dessert
+            referencedTableName: desserts
+            referencedColumnNames: dessert_id
+            onDelete: CASCADE

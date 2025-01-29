@@ -1,0 +1,25 @@
+databaseChangeLog:
+- changeSet:
+    id: create-desserts-table
+    author: Prokhovich Vladislav
+    changes:
+      - createTable:
+          tableName: desserts
+          columns:
+            - column:
+                name: dessert_id
+                type: BIGSERIAL
+                constraints:
+                  primaryKey: true
+                  nullable: false
+
+            - column:
+                name: dessert_name
+                type: VARCHAR(40)
+                constraints:
+                  nullable: false
+            - column:
+                name: dessert_price
+                type: DOUBLE
+                constraints:
+                  nullable: false

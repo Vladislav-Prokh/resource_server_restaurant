@@ -1,0 +1,87 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-orders-table
+      author: Prokhovich Vladislav
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: orders_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: main_course_price
+                  type: DOUBLE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: dessert_price
+                  type: DOUBLE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: beverage_price
+                  type: DOUBLE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: lunch_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: beverage_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: add-foreign-keys
+      author: Prokhovich Vladislav
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: lunch_id
+            constraintName: fk_orders_lunch
+            referencedTableName: lunches
+            referencedColumnNames: lunch_id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: employee_id
+            constraintName: fk_orders_employees
+            referencedTableName: employees
+            referencedColumnNames: employee_id
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: beverage_id
+            constraintName: fk_orders_beverage
+            referencedTableName: beverages
+            referencedColumnNames: beverage_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: add-ordered-additional-foreign-key
+      author: Prokhovich Vladislav
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: ordered_additionals
+            baseColumnNames: orders_id
+            constraintName: fk_ordered_additional_orders
+            referencedTableName: orders
+            referencedColumnNames: orders_id
+            onDelete: CASCADE

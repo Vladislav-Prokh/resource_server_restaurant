@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-beverage_additionals-table
+      author: Prokhovich Vladislav
+      changes:
+        - createTable:
+            tableName: beverage_additionals
+            columns:
+              - column:
+                  name: beverage_additional_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: beverage_additional_name
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: beverage_additional_price
+                  type: DOUBLE
+                  constraints:
+                    nullable: false

@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ordered_additionals-table
+      author: Prokhovich Vladislav
+      changes:
+        - createTable:
+            tableName: ordered_additionals
+            columns:
+              - column:
+                  name: ordered_additional_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: beverage_additional_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: add-beverage_id-to-ordered_additionals
+      author: Prokhovich Vladislav
+      changes:
+        - addColumn:
+            tableName: ordered_additionals
+            columns:
+              - column:
+                  name: beverage_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: add-orders_id-to-ordered_additionals
+      author: Prokhovich Vladislav
+      changes:
+        - addColumn:
+            tableName: ordered_additionals
+            columns:
+              - column:
+                  name: orders_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true

@@ -1,0 +1,30 @@
+databaseChangeLog:
+- changeSet:
+    id: create-meals-table
+    author: Prokhovich Vladislav
+    changes:
+      - createTable:
+          tableName: meals
+          columns:
+            - column:
+                name: meal_id
+                type: BIGSERIAL
+                constraints:
+                  primaryKey: true
+                  nullable: false
+
+            - column:
+                name: meal_name
+                type: VARCHAR(40)
+                constraints:
+                  nullable: false
+            - column:
+                name: meal_price
+                type: DOUBLE
+                constraints:
+                  nullable: false
+            - column:
+                name: cuisine
+                type: VARCHAR(20)
+                constraints:
+                  nullable: false

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create-employees-table.yaml
+  - include:
+      file: db/changelog/create-meals-table.yaml
+  - include:
+      file: db/changelog/create-desserts-table.yaml
+  - include:
+      file: db/changelog/create-beverages-table.yaml
+  - include:
+      file: db/changelog/create-lunches-table.yaml
+  - include:
+      file: db/changelog/create-beverage-additionals-table.yaml
+  - include:
+      file: db/changelog/create-ordered_additionals-table.yaml
+  - include:
+      file: db/changelog/create-orders-table.yaml
+  - include:
+      file: db/changelog/initialize-db.yaml
