@@ -37,10 +37,15 @@ public class ReportService {
 
     private List<Order> getOrdersByWaiterEmailAndDate(ReportRequest reportRequest) {
         String waiterEmail = reportRequest.getWaiterEmail();
-        String startDateAsString = reportRequest.getStartDate()+"T"+"00:00:01";
+        String startDateAsString = reportRequest.getStartDate() + "T" + "00:00:01";
         LocalDateTime startDate = LocalDateTime.parse(startDateAsString);
-        String endDateAsString = reportRequest.getEndDate()+"T"+"23:59:59";
+        String endDateAsString = reportRequest.getEndDate() + "T" + "23:59:59";
         LocalDateTime endDate = LocalDateTime.parse(endDateAsString);
-        return orderRepository.findByWaiterEmailAndCreatedAtBetween(waiterEmail, startDate, endDate);
+
+        if ("all".equals(waiterEmail)) {
+            return orderRepository.findByCreatedAtBetween(startDate, endDate);
+        } else {
+            return orderRepository.findByWaiterEmailAndCreatedAtBetween(waiterEmail, startDate, endDate);
+        }
     }
 }
