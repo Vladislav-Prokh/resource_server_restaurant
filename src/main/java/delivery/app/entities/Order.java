@@ -61,9 +61,8 @@ public class Order {
 	@JoinColumn(name = "beverage_id")
 	private Beverage beverage;
 
-	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-	@JoinColumn(name = "employee_id")
-	private Employee employee;
+	@Column(name = "waiter_email", nullable = false)
+	private String waiterEmail;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
 	@JoinColumn(name = "orders_id")

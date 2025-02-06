@@ -19,7 +19,7 @@ public class OrderRequestDTO {
 	@Enumerated(EnumType.STRING)
 	private CuisineType dessertCuisine;
 	private Long beverageId;
-	private Long waiterId;
+	private String waiterEmail;
 	private List<OrderedAdditionalDTO> orderedAdditions;
 
 }

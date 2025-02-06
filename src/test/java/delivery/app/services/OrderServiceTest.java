@@ -6,15 +6,12 @@ import delivery.app.entities.Beverage;
 import delivery.app.entities.BeverageAdditional;
 import delivery.app.entities.CuisineType;
 import delivery.app.entities.Dessert;
-import delivery.app.entities.Employee;
 import delivery.app.entities.Lunch;
 import delivery.app.entities.Meal;
 import delivery.app.entities.Order;
 import delivery.app.entities.OrderedAdditional;
-import delivery.app.entities.Role;
 import delivery.app.exceptions.ResourceNotFoundException;
 import delivery.app.repositories.BeverageRepository;
-import delivery.app.repositories.EmployeeRepository;
 import delivery.app.repositories.LunchRepository;
 import delivery.app.repositories.OrderRepository;
 import delivery.app.repositories.OrderedAdditionalRepository;
@@ -46,8 +43,6 @@ public class OrderServiceTest {
 	    @Mock
 	    private BeverageRepository beverageRepository;
 
-	    @Mock
-	    private EmployeeRepository employeeRepository;
 
 	    @Mock
 	    private LunchRepository lunchRepository;
@@ -84,21 +79,20 @@ public class OrderServiceTest {
 
             Lunch lunch = new Lunch(mainCourse, dessert);
 	        lunch.setLunchId(1L);
-            Employee waiter = new Employee(1L, "John", "Doe", "developer", Role.ADMIN);
+            String waiterEmail = "waiter@mail.com";
 	        
 	        OrderedAdditional orderedAdditional = new OrderedAdditional(beverage, order, beverageAdditional, 1); 
 	        orderedAdditional.setOrderedAdditional_id(1L);
 	        orderedAdditionals = List.of(orderedAdditional);
 	        
 	        orderRequestDTO = new OrderRequestDTO(
-	                1L, CuisineType.Italian, CuisineType.Italian, 1L, 1L, Collections.emptyList()
+	                1L, CuisineType.Italian, CuisineType.Italian, 1L, "waiterEmail", Collections.emptyList()
 	        );
 
 	        order = new Order(1L, LocalDateTime.now(), 10.0f, 10.0f, 10.0f,
-                    lunch, CuisineType.Italian, CuisineType.Mexican, beverage, waiter, orderedAdditionals);
+                    lunch, CuisineType.Italian, CuisineType.Mexican, beverage, waiterEmail, orderedAdditionals);
 
 	        when(beverageRepository.findById(1L)).thenReturn(java.util.Optional.of(beverage));
-	        when(employeeRepository.findById(1L)).thenReturn(java.util.Optional.of(waiter));
 	        when(lunchRepository.findById(1L)).thenReturn(java.util.Optional.of(lunch));
 	        when(orderRepository.save(any(Order.class))).thenReturn(order);
 	        when(orderedAdditionalRepository.saveAll(anyList())).thenReturn(orderedAdditionals); 
@@ -115,13 +109,11 @@ public class OrderServiceTest {
 	    	        assertEquals(CuisineType.Italian, result.getDessertCuisine());
 	    	        assertEquals(1L, result.getLunchId());
 	    	        assertEquals(1L, result.getBeverageId());
-	    	        assertEquals(1L, result.getWaiterId());
 	    	        assertEquals(orderedAdditionals.size(), result.getOrderedAdditions().size());
 
 	    	        verify(orderRepository, times(2)).save(any(Order.class)); 
 	    	        verify(beverageRepository, times(1)).findById(1L);
 	    	        verify(lunchRepository, times(1)).findById(1L);
-	    	        verify(employeeRepository, times(1)).findById(1L);
 	    	        verify(orderedAdditionalRepository, times(1)).saveAll(anyList());  
 	    }
 	    

@@ -19,10 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import delivery.app.dto.OrderRequestDTO;
 import delivery.app.dto.OrderResponseDTO;
 import delivery.app.entities.Beverage;
-import delivery.app.entities.Employee;
-import delivery.app.entities.Role;
 import delivery.app.repositories.OrderRepository;
-import delivery.app.services.EmployeeService;
 import delivery.app.services.MenuService;
 import delivery.app.services.OrderService;
 import jakarta.transaction.Transactional;
@@ -41,9 +38,7 @@ public class OrderControllerIntegrationTest{
 
     @Autowired
     private OrderRepository orderRepository;
-    
-    @Autowired
-    private EmployeeService employeeService;
+
     
     @Autowired
     private MenuService menuService;
@@ -59,23 +54,15 @@ public class OrderControllerIntegrationTest{
     @BeforeEach
     public void setUp(TestInfo testInfo) {
   
-        Employee employee = new Employee();
-        employee.setEmployeeEmail("test@gmail.com");
-        employee.setEmployeeName("test");
-        employee.setEmployeeSurName("test");
-        employee.setRole(Role.WAITER);
-        employee = employeeService.saveEmployee(employee); 
-        
+        String waiterEmail = "email@email.com";
         Beverage beverage = new Beverage("Coke", 10.f);
-        beverage = menuService.saveBeverage(beverage); 
-
-        this.employeeId = employee.getEmployeeId();
+        beverage = menuService.saveBeverage(beverage);
         this.beverageId = beverage.getBeverageId();
         
         if (testInfo.getTestMethod().isPresent() &&
                 testInfo.getTestMethod().get().getName().equals("testDeleteOrderById")) {
             OrderRequestDTO orderRequest = new OrderRequestDTO(null, null, null,
-                    beverageId, employeeId, null);
+                    beverageId, waiterEmail, null);
             OrderResponseDTO response = orderService.saveOrder(orderRequest);
             this.orderId = response.getOrderId();
         }
@@ -85,7 +72,7 @@ public class OrderControllerIntegrationTest{
     @Test
     public void testFindOrderById() throws Exception {
         OrderRequestDTO orderRequest = new OrderRequestDTO(null, null, null,
-                beverageId, employeeId, null);
+                beverageId, "waiter_email", null);
         OrderResponseDTO response = orderService.saveOrder(orderRequest);
 
         mockMvc.perform(get("/orders/" + response.getOrderId())
@@ -107,7 +94,7 @@ public class OrderControllerIntegrationTest{
     @Test
     public void testGetOrders() throws Exception {
         OrderRequestDTO orderRequest = new OrderRequestDTO(null, null, null,
-                beverageId, employeeId, null);
+                beverageId, "waiter_email", null);
         orderService.saveOrder(orderRequest);
         mockMvc.perform(get("/orders?page=0&size=1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -119,13 +106,13 @@ public class OrderControllerIntegrationTest{
      @Test
     public void testAddOrder() throws Exception {
         OrderRequestDTO orderRequest = new OrderRequestDTO(null, null,
-        		null, beverageId, employeeId,null);
+        		null, beverageId, "waiter_email",null);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderRequest)))
                 .andExpect(status().isOk())
            		.andExpect(jsonPath("$.orderId").value(1L))
-           		.andExpect(jsonPath("$.waiterId").value(employeeId));  		
+           		.andExpect(jsonPath("$.waiterEmail").value("waiter_email"));
     }
 }

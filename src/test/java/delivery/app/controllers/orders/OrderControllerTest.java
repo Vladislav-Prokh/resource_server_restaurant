@@ -59,7 +59,7 @@ public class OrderControllerTest {
 		OrderRequestDTO requestDTO = new OrderRequestDTO();
 		requestDTO.setBeverageId(1L);
 		requestDTO.setLunchId(1L);
-		requestDTO.setWaiterId(1L);
+		requestDTO.setWaiterEmail("email@email.com");
 
 		OrderResponseDTO responseDTO = new OrderResponseDTO();
 		responseDTO.setOrderId(2L);

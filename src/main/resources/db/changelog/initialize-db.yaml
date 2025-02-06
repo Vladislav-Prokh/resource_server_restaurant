@@ -1,30 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: "1"
-      author: postgres
-      changes:
-        - insert:
-            tableName: employees
-            columns:
-              - column:
-                  name: employee_name
-                  value: "test_waiter"
-              - column:
-                  name: employee_surname
-                  value: "waiter_surname"
-              - column:
-                  name: employee_email
-                  value: "waiter_email@gmai.com"
-              - column:
-                  name: employee_role
-                  value: "WAITER"
-      preConditions:
-        - onFail: CONTINUE
-        - sqlCheck:
-            expectedResult: 0
-            sql: "SELECT COUNT(*) FROM employees"
-
-  - changeSet:
       id: "2"
       author: postgres
       changes:
@@ -37,6 +12,9 @@ databaseChangeLog:
               - column:
                   name: dessert_price
                   value: "6.0"
+              - column:
+                  name: description
+                  value: "cake"
       preConditions:
         - onFail: CONTINUE
         - sqlCheck:
@@ -56,6 +34,9 @@ databaseChangeLog:
               - column:
                   name: meal_price
                   value: "12.0"
+              - column:
+                  name: description
+                  value: "meal"
       preConditions:
         - onFail: CONTINUE
         - sqlCheck:
@@ -113,6 +94,9 @@ databaseChangeLog:
               - column:
                   name: beverage_price
                   value: "0.99"
+              - column:
+                  name: description
+                  value: "description"
       preConditions:
         - onFail: CONTINUE
         - sqlCheck:
@@ -169,7 +153,7 @@ databaseChangeLog:
                   name: beverage_id
                   value: "1" 
               - column:
-                  name: employee_id
+                  name: waiter_email
                   value: "1"
       preConditions:
         - onFail: CONTINUE

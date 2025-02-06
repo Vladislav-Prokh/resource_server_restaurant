@@ -24,10 +24,18 @@ public class Dessert {
 	private String dessertName;
 	@Column(length = 50,name = "dessert_price")
 	private float dessertPrice;
+	@Column(name = "description", length = 500)
+	private String description;
 
 	public Dessert(String dessertName, float dessertPrice) {
 		super();
 		this.dessertName = dessertName;
 		this.dessertPrice = dessertPrice;
 	}
+
+    public Dessert(String dessertName, String dessertDescription, float dessertPrice) {
+		this.dessertName = dessertName;
+		this.dessertPrice = dessertPrice;
+		this.description = dessertDescription;
+    }
 }

@@ -53,7 +53,7 @@ public class MenuControllerIntegrationPostTest {
 
 	@Test
 	public void testAddBeverage() throws Exception {
-	    Beverage beverage = new Beverage("Pepsi", 12f);
+	    Beverage beverage = new Beverage("Pepsi", "description",12f);
 
 	    mockMvc.perform(post("/menu/beverages")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +65,7 @@ public class MenuControllerIntegrationPostTest {
 
 	@Test
 	public void testAddMeal() throws Exception {
-	    Meal meal = new Meal("Pasta", 15f);
+	    Meal meal = new Meal("Pasta", "description",15f);
 
 	    mockMvc.perform(post("/menu/meals")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class MenuControllerIntegrationPostTest {
 	
 	@Test
 	public void testAddDessert() throws Exception {
-	    Dessert dessert = new Dessert("Cheesecake", 7.5f);
+	    Dessert dessert = new Dessert("Cheesecake", "description",7.5f);
 
 	    mockMvc.perform(post("/menu/desserts")
 	            .contentType(MediaType.APPLICATION_JSON)

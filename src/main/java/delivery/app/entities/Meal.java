@@ -27,10 +27,18 @@ public class Meal {
 	private String mealName;
 	@Column(name = "meal_price")
 	private float mealPrice;
+	@Column(name = "description",length = 500)
+	private String description;
 
 	public Meal(String mealName, float mealPrice) {
 		super();
 		this.mealName = mealName;
 		this.mealPrice = mealPrice;
 	}
+
+    public Meal(String mealName, String mealDescription, float mealPrice) {
+		this.mealName = mealName;
+		this.mealPrice = mealPrice;
+		this.description = mealDescription;
+    }
 }

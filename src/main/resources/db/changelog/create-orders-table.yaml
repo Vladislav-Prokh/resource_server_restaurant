@@ -49,8 +49,8 @@ databaseChangeLog:
                   constraints:
                    nullable: true				   
               - column:
-                  name: employee_id
-                  type: BIGINT
+                  name: waiter_email
+                  type: varchar(100)
                   constraints:
                     nullable: false
               - column:
@@ -70,12 +70,6 @@ databaseChangeLog:
             referencedTableName: lunches
             referencedColumnNames: lunch_id
             onDelete: SET NULL
-        - addForeignKeyConstraint:
-            baseTableName: orders
-            baseColumnNames: employee_id
-            constraintName: fk_orders_employees
-            referencedTableName: employees
-            referencedColumnNames: employee_id
         - addForeignKeyConstraint:
             baseTableName: orders
             baseColumnNames: beverage_id

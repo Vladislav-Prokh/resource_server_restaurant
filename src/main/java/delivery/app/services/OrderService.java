@@ -15,14 +15,12 @@ import delivery.app.dto.OrderResponseDTO;
 import delivery.app.dto.OrderedAdditionalDTO;
 import delivery.app.entities.Beverage;
 import delivery.app.entities.BeverageAdditional;
-import delivery.app.entities.Employee;
 import delivery.app.entities.Lunch;
 import delivery.app.entities.Order;
 import delivery.app.entities.OrderedAdditional;
 import delivery.app.exceptions.ResourceNotFoundException;
 import delivery.app.repositories.BeverageAdditionalRepository;
 import delivery.app.repositories.BeverageRepository;
-import delivery.app.repositories.EmployeeRepository;
 import delivery.app.repositories.LunchRepository;
 import delivery.app.repositories.OrderRepository;
 import delivery.app.repositories.OrderedAdditionalRepository;
@@ -34,15 +32,13 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final BeverageRepository beverageRepository;
-	private final EmployeeRepository employeeRepository;
 	private final LunchRepository lunchRepository;
 	private final BeverageAdditionalRepository beverageAdditionalRepository;
 	private final OrderedAdditionalRepository orderedAdditionalRepository;
 
-	public OrderService(OrderRepository orderRepository, BeverageRepository beverageRepository, EmployeeRepository employeeRepository, LunchRepository lunchRepository, BeverageAdditionalRepository beverageAdditionalRepository, OrderedAdditionalRepository orderedAdditionalRepository) {
+	public OrderService(OrderRepository orderRepository, BeverageRepository beverageRepository, LunchRepository lunchRepository, BeverageAdditionalRepository beverageAdditionalRepository, OrderedAdditionalRepository orderedAdditionalRepository) {
 		this.orderRepository = orderRepository;
 		this.beverageRepository = beverageRepository;
-		this.employeeRepository = employeeRepository;
 		this.lunchRepository = lunchRepository;
 		this.beverageAdditionalRepository = beverageAdditionalRepository;
 		this.orderedAdditionalRepository = orderedAdditionalRepository;
@@ -51,7 +47,7 @@ public class OrderService {
 	public OrderResponseDTO saveOrder(OrderRequestDTO orderDTO) {
 	    Beverage orderedBeverage = fetchBeverageIfPresent(orderDTO.getBeverageId());
 	    Lunch lunch = fetchLunchIfPresent(orderDTO.getLunchId());
-	    Employee servicingWaiter = fetchEmployee(orderDTO.getWaiterId());
+	    String servicingWaiter = orderDTO.getWaiterEmail();
 
 	    Order newOrder = createOrder(orderDTO, orderedBeverage, lunch, servicingWaiter);
 	    newOrder = orderRepository.save(newOrder);
@@ -78,9 +74,9 @@ public class OrderService {
 	    return lunchId != null ? fetchLunch(lunchId) : null;
 	}
 
-	private Order createOrder(OrderRequestDTO orderDTO, Beverage orderedBeverage, Lunch lunch, Employee servicingWaiter) {
+	private Order createOrder(OrderRequestDTO orderDTO, Beverage orderedBeverage, Lunch lunch, String servicingWaiter) {
 	    Order order = new Order();
-	    order.setEmployee(servicingWaiter);
+	    order.setWaiterEmail(servicingWaiter);
 	    order.setBeverage(orderedBeverage);
 
 	    if (lunch != null) {
@@ -135,14 +131,14 @@ public class OrderService {
 	        .collect(Collectors.toList());
 	}
 
-	OrderResponseDTO buildOrderResponseDTO(OrderRequestDTO orderDTO, Order newOrder, Lunch lunch, Beverage orderedBeverage, Employee servicingWaiter, List<OrderedAdditionalDTO> orderedAdditionalsDTO) {
+	OrderResponseDTO buildOrderResponseDTO(OrderRequestDTO orderDTO, Order newOrder, Lunch lunch, Beverage orderedBeverage, String servicingWaiter, List<OrderedAdditionalDTO> orderedAdditionalsDTO) {
 	    return new OrderResponseDTO(
 	        newOrder.getOrderId(),
 	        lunch != null && lunch.getMainCourse() != null ? orderDTO.getMainCourseCuisine() : null,
 	        lunch != null && lunch.getDessert() != null ? orderDTO.getDessertCuisine() : null,
 	        lunch != null ? lunch.getLunchId() : null,
 	        orderedBeverage != null ? orderedBeverage.getBeverageId() : null,
-	        servicingWaiter != null ? servicingWaiter.getEmployeeId() : null,
+                servicingWaiter,
 	        orderedAdditionalsDTO
 	    );
 	}
@@ -150,11 +146,6 @@ public class OrderService {
 	private Beverage fetchBeverage(Long beverageId) {
 	    return beverageRepository.findById(beverageId)
 	        .orElseThrow(() -> new IllegalArgumentException("Invalid beverage ID"));
-	}
-
-	private Employee fetchEmployee(Long waiterId) {
-	    return employeeRepository.findById(waiterId)
-	        .orElseThrow(() -> new IllegalArgumentException("Invalid waiter ID"));
 	}
 
 	private Lunch fetchLunch(Long lunchId) {
@@ -188,7 +179,6 @@ public class OrderService {
 	    if (order.getOrderedBeverageAdditionals() != null) {
 	        order.getOrderedBeverageAdditionals().clear(); 
 	    }
-
 	    orderRepository.save(order);
 	    orderRepository.delete(order);
 	}

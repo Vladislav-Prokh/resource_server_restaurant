@@ -18,6 +18,8 @@ import delivery.app.exceptions.ResourceNotFoundException;
 import delivery.app.repositories.LunchRepository;
 import delivery.app.repositories.MealRepository;
 
+import java.util.List;
+
 @Service
 public class MenuService {
 
@@ -63,6 +65,14 @@ public class MenuService {
 
 	public Meal saveMeal(Meal meal) {
 		return this.mealRepository.save(meal);
+	}
+
+	public List<Dessert> saveDesserts(List<Dessert> dessertItems) {
+		return this.dessertRepository.saveAll(dessertItems);
+	}
+
+	public List<Meal> saveMeals(List<Meal> mealItems) {
+		return this.mealRepository.saveAll(mealItems);
 	}
 
 	public BeverageAdditional saveBeverageAdditional(BeverageAdditional additional) {
@@ -132,5 +142,10 @@ public class MenuService {
 	public Page<Dessert> getDesserts(int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return dessertRepository.findAll(pageable);
+	}
+
+
+	public List<Beverage> saveBeverages(List<Beverage> list) {
+		return this.beverageRepository.saveAll(list);
 	}
 }

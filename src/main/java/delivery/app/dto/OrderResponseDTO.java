@@ -21,6 +21,6 @@ public class OrderResponseDTO {
 	private CuisineType dessertCuisine;
 	private Long lunchId;
     private Long beverageId;
-    private Long waiterId;
+    private String waiterEmail;
     private List<OrderedAdditionalDTO> orderedAdditions;
 }

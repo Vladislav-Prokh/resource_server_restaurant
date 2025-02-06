@@ -27,10 +27,12 @@ public class Beverage {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "beverage_id")
 	private Long beverageId;
-	@Column(length = 20, name = "beverage_name")
+	@Column(length = 100, name = "beverage_name")
 	private String beverageName;
 	@Column(name = "beverage_price")
 	private float beveragePrice;
+	@Column(name = "description" , length = 300)
+	private String description;
 	@JsonIgnore
 	@OneToMany(mappedBy = "beverage")
 	private List<OrderedAdditional> orderedAdditionals;
@@ -43,11 +45,13 @@ public class Beverage {
 		this.orderedAdditionals = orderedAdditionals;
 	}
 
-	public Beverage(String beverageName, float beveragePrice) {
+	public Beverage(String beverageName, String description,float beveragePrice) {
 		super();
 		this.beverageName = beverageName;
+		this.description = description;
 		this.beveragePrice = beveragePrice;
 	}
-	
 
+    public Beverage(String pepsi, float v) {
+    }
 }
