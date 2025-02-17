@@ -1,5 +1,5 @@
 package delivery.app.configuration;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,19 +13,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
 public class SecurityConfig {
 
+	@Value("${urls.paths.authServer}")
+	private String authServer;
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(authz -> authz
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-						.requestMatchers("/api/auth/logout").permitAll()
-						.requestMatchers("/api/auth/userinfo").permitAll()
 						.requestMatchers(HttpMethod.GET, "/menu-items/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/menu/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/menu/**").hasRole("ADMIN")
@@ -34,10 +35,12 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("WAITER", "ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/orders").hasAnyRole("ADMIN")
-						.requestMatchers("/employees").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/reports/**").permitAll()
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
+						.requestMatchers(HttpMethod.GET, "/elastic/**").permitAll()
+						.requestMatchers(HttpMethod.DELETE, "/elastic/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/elastic/**").permitAll()
 						.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2
@@ -60,19 +63,34 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtDecoder jwtDecoder() {
-		return NimbusJwtDecoder.withJwkSetUri("http://localhost:9000/oauth2/jwks").build();
+		return NimbusJwtDecoder.withJwkSetUri("http://" +authServer+":9000/oauth2/jwks").build();
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
 		config.addAllowedOrigin("http://localhost:4200");
+		config.addAllowedMethod("GET");
+		config.addAllowedMethod("POST");
+		config.addAllowedMethod("PUT");
+		config.addAllowedMethod("DELETE");
+		config.addAllowedMethod("PATCH");
+		config.addAllowedHeader("Content-Type");
+		config.addAllowedHeader("Authorization");
+		config.addAllowedHeader("X-Requested-With");
+		config.addAllowedHeader("Accept");
 		config.setAllowCredentials(true);
-		source.registerCorsConfiguration("/**", config);
+		config.setMaxAge(3600L);
+		source.registerCorsConfiguration("/login", config);
+		source.registerCorsConfiguration("/oauth2/**", config);
+		source.registerCorsConfiguration("/.well-known/**", config);
+
 		return source;
 	}
 
+	@Bean
+	public CorsFilter corsFilter() {
+		return new CorsFilter(corsConfigurationSource());
+	}
 }

@@ -3,6 +3,7 @@ package delivery.app.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -38,6 +39,7 @@ public class Order {
 	private Long orderId;
 	@JsonProperty("created_at")
 	@Column(name="created_at")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
 	@Column(name="main_course_price")
 	private float mainCoursePrice;

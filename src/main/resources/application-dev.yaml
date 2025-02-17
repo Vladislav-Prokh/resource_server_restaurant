@@ -1,0 +1,15 @@
+elasticsearch:
+  host: http://localhost:9000
+
+spring:
+  datasource:
+    url: jdbc:postgresql://restaurant_db:5432/restaurant
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+urls:
+  paths:
+    authServer: auth
+
+
