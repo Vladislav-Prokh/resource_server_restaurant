@@ -3,18 +3,31 @@ package delivery.app.services;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import delivery.app.entities.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import delivery.app.entities.Beverage;
+import delivery.app.entities.Dessert;
+import delivery.app.entities.Lunch;
+import delivery.app.entities.Meal;
 import delivery.app.exceptions.ResourceNotFoundException;
 import lombok.Getter;
 import org.apache.http.HttpHost;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -40,71 +53,70 @@ public class ElasticService {
         this.client = new ElasticsearchClient(transport);
     }
 
-    private <T> long initElastic(Page<T> page, String indexName, Function<Integer, Page<T>> fetchPageFunction) throws IOException {
-        long totalRecords = page.getTotalElements();
-        indexPage(page, indexName);
-        for (int i = 1; i < page.getTotalPages(); i++) {
-            page = fetchPageFunction.apply(i);
-            indexPage(page, indexName);
-        }
 
-        return totalRecords;
+    public List<Lunch> findLunches(String query)  throws IOException{
+
+        SearchResponse<Lunch> searchResponse = client.search(s -> s
+                .index("lunch")
+                .query(q -> q.bool(b -> b
+                        .must(m -> m.multiMatch(mm -> mm
+                                .query(query)
+                                .fields("mainCourse.mealName", "mainCourse.description",
+                                        "dessert.dessertName", "dessert.description")
+                                .fuzziness("AUTO")
+                        ))
+                )), Lunch.class);
+
+
+        return searchResponse.hits().hits().stream()
+                .map(Hit::source)
+                .toList();
     }
 
-    private <T> void indexPage(Page<T> page, String indexName) throws IOException {
+    public long initElasticByType(String type) throws IOException {
+        switch (type.toLowerCase()) {
+            case "meal":
+                return initElastic(page -> menuService.getMeals(page, 10), Meal::getMealId, "menu");
+            case "dessert":
+                return initElastic(page -> menuService.getDesserts(page, 10), Dessert::getDessertId, "menu");
+            case "beverage":
+                return initElastic(page -> menuService.getBeverages(page, 10), Beverage::getBeverageId, "menu");
+            case "lunch":
+                return initElastic(page -> menuService.getLunches(page, 10), Lunch::getLunchId, "lunch");
+            default:
+                throw new IllegalArgumentException("Unsupported type: " + type);
+        }
+    }
+
+    public <T> long initElastic(Function<Integer, Page<T>> fetchFunction, Function<T, Object> idExtractor, String indexName) throws IOException {
+        long recordsCount = 0;
+        Page<T> page = fetchFunction.apply(0);
+        recordsCount = indexPage(page, idExtractor, indexName);
+
+        for (int i = 1; i < page.getTotalPages(); i++) {
+            page = fetchFunction.apply(i);
+            recordsCount +=indexPage(page, idExtractor, indexName);
+        }
+        return recordsCount;
+    }
+
+    private <T> long indexPage(Page<T> page, Function<T, Object> idExtractor, String indexName) throws IOException {
+        long recordsIndexed = 0;
         List<T> items = page.getContent();
         for (T item : items) {
-            String id = getItemId(item);
-            System.out.println("Indexing item: " + item);
+            String id = idExtractor.apply(item).toString();
             try {
                 client.index(k -> k
                         .index(indexName)
                         .id(id)
                         .document(item));
+                recordsIndexed++;
             } catch (Exception e) {
                 System.err.println("Error indexing " + indexName + " item " + id + ": " + e.getMessage());
+                return 0;
             }
         }
-    }
-
-    private <T> String getItemId(T item) {
-        if (item instanceof Meal) {
-            return String.valueOf(((Meal) item).getMealId());
-        } else if (item instanceof Dessert) {
-            return String.valueOf(((Dessert) item).getDessertId());
-        } else if (item instanceof Beverage) {
-            return String.valueOf(((Beverage) item).getBeverageId());
-        } else if (item instanceof Lunch) {
-            return String.valueOf(((Lunch) item).getLunchId());
-        }else if (item instanceof Order) {
-            return String.valueOf(((Order) item).getOrderId());
-        }
-        throw new IllegalArgumentException("Unknown item type");
-    }
-
-    public long initElasticByMeals() throws IOException {
-        Page<Meal> mealPage = this.menuService.getMeals(0, 10);
-        return initElastic(mealPage, "meal", page -> this.menuService.getMeals(page, 10));
-    }
-
-    public long initElasticByDesserts() throws IOException {
-        Page<Dessert> dessertsPage = this.menuService.getDesserts(0, 10);
-        return initElastic(dessertsPage, "dessert", page -> this.menuService.getDesserts(page, 10));
-    }
-
-    public long initElasticByBeverages() throws IOException {
-        Page<Beverage> beveragePage = this.menuService.getBeverages(0, 10);
-        return initElastic(beveragePage, "beverage", page -> this.menuService.getBeverages(page, 10));
-    }
-
-    public long initElasticByLunches() throws IOException {
-        Page<Lunch> lunchPage = this.menuService.getLunches(0, 10);
-        return initElastic(lunchPage, "lunch", page -> this.menuService.getLunches(page, 10));
-    }
-
-    public long initElasticByOrders() throws IOException {
-        Page<Order> orderPage = this.orderService.getOrders(0, 10);
-        return initElastic(orderPage, "order", page -> orderService.getOrders(page, 10));
+        return recordsIndexed;
     }
 
     public void deleteDocumentInIndex(String indexName, String documentId) throws IOException {
@@ -112,11 +124,11 @@ public class ElasticService {
         DeleteResponse response = client.delete(i -> i
                 .index(indexName)
                 .id(documentId));
-
         if(response.result() == Result.NotFound){
             throw new ResourceNotFoundException("Document not found");
         }
-
     }
+
+
 
 }

@@ -1,9 +1,11 @@
 package delivery.app.controllers;
 
+import delivery.app.entities.Lunch;
 import delivery.app.services.ElasticService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/elastic")
@@ -15,27 +17,18 @@ public class ElasticController {
         this.elasticService = elasticService;
     }
 
-    @PostMapping("/orders")
-    public long initElasticByOrders() throws IOException {
-        return elasticService.initElasticByOrders();
+
+
+    @PostMapping("/menu")
+    public long initElastic(@RequestParam String type) throws IOException {
+        return this.elasticService.initElasticByType(type);
     }
 
-    @PostMapping("/meals")
-    public long initElasticByMeals() throws IOException {
-        return elasticService.initElasticByMeals();
+    @GetMapping("/lunches")
+    public List<Lunch> findLunches(@RequestParam String query) throws IOException {
+        return this.elasticService.findLunches(query);
     }
-    @PostMapping("/desserts")
-    public long initElasticByDesserts() throws IOException {
-        return elasticService.initElasticByDesserts();
-    }
-    @PostMapping("/beverages")
-    public long initElasticByBeverages() throws IOException {
-        return elasticService.initElasticByBeverages();
-    }
-    @PostMapping("/lunches")
-    public long initElasticByLunches() throws IOException {
-        return elasticService.initElasticByLunches();
-    }
+
     @DeleteMapping("/document")
     public void deleteDocumentInIndex(@RequestParam String indexName, @RequestParam String documentId) throws IOException {
         this.elasticService.deleteDocumentInIndex(indexName, documentId);

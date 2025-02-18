@@ -36,11 +36,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("WAITER", "ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/orders").hasAnyRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/reports/**").permitAll()
+						.requestMatchers( "/elastic/**").hasRole("ADMIN")
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
-						.requestMatchers(HttpMethod.GET, "/elastic/**").permitAll()
-						.requestMatchers(HttpMethod.DELETE, "/elastic/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/elastic/**").permitAll()
+
 						.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2

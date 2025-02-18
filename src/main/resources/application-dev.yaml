@@ -1,5 +1,5 @@
 elasticsearch:
-  host: http://localhost:9000
+  host: http://localhost:9200
 
 spring:
   datasource:
