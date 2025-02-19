@@ -1,9 +1,9 @@
 package delivery.app.controllers;
 
+import delivery.app.dto.AggregatedLunchesDTO;
 import delivery.app.entities.Lunch;
 import delivery.app.services.ElasticService;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -18,19 +18,25 @@ public class ElasticController {
     }
 
 
-
-    @PostMapping("/menu")
-    public long initElastic(@RequestParam String type) throws IOException {
-        return this.elasticService.initElasticByType(type);
+    @GetMapping("/lunches/price-edge")
+    public AggregatedLunchesDTO priceEdgeCount(@RequestParam float priceEdge) throws IOException {
+       return  this.elasticService.getPriceEdgeCounts(priceEdge);
     }
+
 
     @GetMapping("/lunches")
-    public List<Lunch> findLunches(@RequestParam String query) throws IOException {
-        return this.elasticService.findLunches(query);
+    public List<Lunch> findLunches(@RequestParam String query, @RequestParam(required = false) String lunchesPriceEdgeCondition, @RequestParam float priceEdge ) throws IOException {
+        return this.elasticService.findLunches(query,lunchesPriceEdgeCondition,priceEdge);
     }
+
 
     @DeleteMapping("/document")
     public void deleteDocumentInIndex(@RequestParam String indexName, @RequestParam String documentId) throws IOException {
         this.elasticService.deleteDocumentInIndex(indexName, documentId);
+    }
+
+    @PostMapping("/menu")
+    public long initElastic(@RequestParam String type){
+        return this.elasticService.initElasticByType(type);
     }
 }
