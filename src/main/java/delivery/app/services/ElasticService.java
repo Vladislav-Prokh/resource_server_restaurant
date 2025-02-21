@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationRange;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
@@ -49,6 +50,18 @@ public class ElasticService {
         this.client = new ElasticsearchClient(transport);
     }
 
+    public void saveLunch(Lunch lunch) throws IOException {
+        IndexResponse response = client.index(i -> i
+                .index("lunch")
+                .id(lunch.getLunchId().toString())
+                .document(lunch));
+    }
+
+    public void deleteLunch(String lunchId) throws IOException {
+        DeleteResponse response = client.delete(i -> i
+                .index("lunch")
+                .id(lunchId));
+    }
 
     public List<Lunch> findLunches(String query,String  lunchesPriceEdgeCondition,float priceEdge)  throws IOException{
         if(!query.isEmpty()){
@@ -131,7 +144,6 @@ public class ElasticService {
         return parseAggregatedLunchesDTO(aggregationResult);
     }
 
-
     private AggregatedLunchesDTO parseAggregatedLunchesDTO(String priceRanges) {
         int indexOfStartValue = 41;
         priceRanges = priceRanges.substring(indexOfStartValue, priceRanges.length() - 3);
@@ -145,7 +157,6 @@ public class ElasticService {
 
         return new AggregatedLunchesDTO(Integer.parseInt(amountLessEdgeAsStr),Integer.parseInt(amountGreaterEdgeAsStr));
     }
-
 
     public long initElasticByType(String type)  {
         switch (type.toLowerCase()) {

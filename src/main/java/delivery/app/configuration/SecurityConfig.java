@@ -2,6 +2,14 @@ package delivery.app.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,6 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.time.Duration;
 
 
 @Configuration
@@ -28,15 +38,17 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authz -> authz
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/menu-items/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.POST, "/menu/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/menu/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/menu/**").permitAll()
 						.requestMatchers(HttpMethod.DELETE, "/menu/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/menu/meals").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/menu/desserts").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("WAITER", "ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/orders").hasAnyRole("ADMIN")
-						.requestMatchers(HttpMethod.POST, "/reports/**").permitAll()
-						.requestMatchers( "/elastic/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/reports/**").hasAnyRole("ADMIN")
+						.requestMatchers( HttpMethod.GET,"/elastic/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/elastic/**").hasAnyRole("ADMIN")
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
 
@@ -92,4 +104,12 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		return new CorsFilter(corsConfigurationSource());
 	}
+
+	@Bean
+	public RedisCacheConfiguration cacheConfiguration() {
+		return RedisCacheConfiguration.defaultCacheConfig()
+				.disableCachingNullValues()
+				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+	}
+
 }

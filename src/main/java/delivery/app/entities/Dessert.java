@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Setter
@@ -32,7 +33,6 @@ public class Dessert {
 		this.dessertName = dessertName;
 		this.dessertPrice = dessertPrice;
 	}
-
     public Dessert(String dessertName, String dessertDescription, float dessertPrice) {
 		this.dessertName = dessertName;
 		this.dessertPrice = dessertPrice;

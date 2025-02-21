@@ -199,12 +199,12 @@ public class MenuServiceTest {
 
         when(lunchRepository.save(any(Lunch.class))).thenReturn(lunch);
 
-        LunchResponseDTO result = menuService.saveLunch(lunchRequestDto);
+        Lunch result = menuService.saveLunch(lunchRequestDto);
 
         assertNotNull(result);
         assertEquals(1L, result.getLunchId());
-        assertEquals(1L, result.getMainCourseId());
-        assertEquals(1L, result.getDessertId());
+        assertEquals(1L, result.getDessert().getDessertId());
+        assertEquals(1L, result.getMainCourse().getMealId());
 
         verify(mealRepository, times(1)).findById(1L);
         verify(dessertRepository, times(1)).findById(1L);

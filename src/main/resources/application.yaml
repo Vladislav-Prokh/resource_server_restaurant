@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+elasticsearch:
+  host: http://localhost:9200
+
+logging:
+  level:
+    org.springframework.web.cors: TRACE
+    org.springframework.security: TRACE
+    org.springframework.cloud.gateway: TRACE
+
+
+spring:
+  application:
+    name: app
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/restaurant
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+urls:
+  paths:
+    authServer: localhost
+
+
+

@@ -48,7 +48,11 @@ public class MenuController  {
             @RequestParam(defaultValue = "10") int size)  {
         return menuService.getLunches(page, size);
     }
-	
+	@GetMapping("/lunches/{id}")
+	public Lunch getLunchById(@PathVariable long id)  {
+		return menuService.getLunchById(id);
+	}
+
 	@GetMapping("/meals")
     public Page<Meal> getMeals(
             @RequestParam(defaultValue = "0") int page, 
@@ -82,17 +86,14 @@ public class MenuController  {
 	public Dessert addDessert(@RequestBody Dessert dessert) {
 		return menuService.saveDessert(dessert);
 	}
-
 	@PostMapping("/lunches")
-	public LunchResponseDTO addLunch(@RequestBody LunchRequestDTO lunch) {
+	public Lunch addLunch(@RequestBody LunchRequestDTO lunch) {
 		return this.menuService.saveLunch(lunch);
 	}
-	
 	@DeleteMapping("/beverage-additionals/{additional-id}")
 	public void deleteBeverageAdditional(@PathVariable("additional-id") Long additional_id) {
 		menuService.deleteBeverageAdditional(additional_id);
 	}
-
 	@DeleteMapping("/beverages/{beverage-id}")
 	public void deleteBeverage(@PathVariable("beverage-id") Long beverageId)  {
 	    menuService.deleteBeverage(beverageId);
@@ -101,12 +102,10 @@ public class MenuController  {
 	public void deleteMeal(@PathVariable("meal-id") Long meal_id)  {
 		menuService.deleteMeal(meal_id);
 	}
-	
 	@DeleteMapping("/desserts/{dessert-id}")
 	public void deleteDessert(@PathVariable("dessert-id") Long dessert_id) {
 		menuService.deleteDessert(dessert_id);
 	}
-
 	@DeleteMapping("/lunches/{lunch-id}")
 	public void deleteLunch(@PathVariable("lunch-id") Long lunch_id)  {
 		menuService.deleteLunch(lunch_id);

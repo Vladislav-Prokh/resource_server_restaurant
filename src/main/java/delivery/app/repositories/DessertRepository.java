@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import delivery.app.entities.Dessert;
 
 @Repository
-public interface DessertRepository extends JpaRepository<Dessert,Long>{
+public interface DessertRepository extends JpaRepository<Dessert,Long> {
 
 }

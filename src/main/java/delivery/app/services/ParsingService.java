@@ -28,14 +28,10 @@ public class ParsingService {
                 .userAgent(parseData.getUserAgent())
                 .referrer(parseData.getReferrer())
                 .get();
-
         Elements productList = doc.select(parseData.getListClass());
-
         List<Item> items = parseItems(productList, parseData.getNameClass(),
                 parseData.getDescriptionClass(), parseData.getPriceClass());
-
         String itemType = parseData.getItemType();
-
         if ("MEAL".equals(itemType)) {
           return  menuService.saveMeals(items.stream().map(i -> new Meal(i.name, i.description, i.price)).toList()).size();
         } else if ("DESSERT".equals(itemType)) {
