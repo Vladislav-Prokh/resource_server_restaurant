@@ -91,7 +91,7 @@ public class ElasticService {
 
         String scriptSource = "doc['mainCourse.mealPrice'].value + doc['dessert.dessertPrice'].value "
                 + (condition.equals("more") ? ">" : "<")
-                + " " + String.valueOf(priceEdge);
+                + " " + priceEdge;
 
 
         SearchResponse<Lunch> response = client.search(s -> s

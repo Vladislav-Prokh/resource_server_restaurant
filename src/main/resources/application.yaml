@@ -4,6 +4,10 @@ server:
 elasticsearch:
   host: http://localhost:9200
 
+payment:
+  stripe:
+    secret: replace_it
+
 logging:
   level:
     org.springframework.web.cors: TRACE
@@ -33,6 +37,7 @@ spring:
 urls:
   paths:
     authServer: localhost
+    frontend: localhost
 
 
 

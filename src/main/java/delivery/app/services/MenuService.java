@@ -36,7 +36,6 @@ public class MenuService {
 	private final MealRepository mealRepository;
 	private final LunchRepository lunchRepository;
 	private final BeverageAdditionalRepository beverageAdditionalRepository;
-
 	private final String NOT_FOUND_MESSAGE = "Resource not found";
 	public MenuService(BeverageRepository beverageRepository, DessertRepository dessertRepository, MealRepository mealRepository, LunchRepository lunchRepository, BeverageAdditionalRepository beverageAdditionalRepository) {
 		this.beverageRepository = beverageRepository;
@@ -56,7 +55,6 @@ public class MenuService {
 		return this.dessertRepository.findById(dessertId)
 				.orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MESSAGE));
 	}
-
 	public Dessert saveDessert(Dessert dessert) {
         return this.dessertRepository.save(dessert);
 	}
@@ -76,6 +74,7 @@ public class MenuService {
 	public BeverageAdditional saveBeverageAdditional(BeverageAdditional additional) {
 		return this.beverageAdditionalRepository.save(additional);
 	}
+
 	@CachePut(value = "lunches", key = "#result.lunchId")
 	public Lunch saveLunch(LunchRequestDTO lunchRequestDto) {
 		Long mainCourseId = lunchRequestDto.getMainCourseId();
@@ -91,7 +90,6 @@ public class MenuService {
 		applicationEventPublisher.publishEvent(new LunchCreatedEvent(this, lunch));
 		return lunch;
 	}
-
 	public void deleteBeverageAdditional(Long id) {
 		this.beverageAdditionalRepository.deleteById(id);
 	}
@@ -124,9 +122,9 @@ public class MenuService {
 		Pageable pageable = PageRequest.of(page, size);
 		return lunchRepository.findAll(pageable);
 	}
+
 	@Cacheable(value = "lunches", key = "#id")
 	public Lunch getLunchById(long id) {
-		System.out.println("run methods get lunch by id");
 		return this.lunchRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MESSAGE));
 	}
 	public Page<Dessert> getDesserts(int page, int size){

@@ -3,13 +3,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,14 +18,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.time.Duration;
-
-
 @Configuration
 public class SecurityConfig {
 
 	@Value("${urls.paths.authServer}")
 	private String authServer;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
@@ -49,9 +42,9 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/reports/**").hasAnyRole("ADMIN")
 						.requestMatchers( HttpMethod.GET,"/elastic/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/elastic/**").hasAnyRole("ADMIN")
+						.requestMatchers(HttpMethod.POST,"/stripe/checkout-session").permitAll()
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
-
 						.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2
@@ -96,7 +89,6 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/login", config);
 		source.registerCorsConfiguration("/oauth2/**", config);
 		source.registerCorsConfiguration("/.well-known/**", config);
-
 		return source;
 	}
 
