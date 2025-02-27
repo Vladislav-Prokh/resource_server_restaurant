@@ -6,7 +6,7 @@ elasticsearch:
 
 payment:
   stripe:
-    secret: replace_it
+    secret: sk_test_51QwLozFaSQm5txzCvhHgOGv4kYxl4KxnTGpWUJlElN5Tg720oJrBUWw9sDyjdz3EkvACavfM7PzSVNEiugnilNc7003QlV6oCD
 
 logging:
   level:
@@ -37,7 +37,7 @@ spring:
 urls:
   paths:
     authServer: localhost
-    frontend: localhost
+    frontend: http://localhost:4200
 
 
 

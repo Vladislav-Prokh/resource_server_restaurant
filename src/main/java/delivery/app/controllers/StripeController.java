@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +19,26 @@ public class StripeController {
     @Value("${payment.stripe.secret}")
     private String secretKey;
     @Value("${urls.paths.frontend}")
-    private String frontendIp;
+    private String frontendUrl;
 
 
-    @PostMapping("/checkout-session")
-    public ResponseEntity<String> createCheckoutSession(@RequestBody Map<String, Object> requestBody) {
+    @PostConstruct
+    private  void initStripe(){
         Stripe.apiKey = secretKey;
+    }
+
+    @PostMapping("/lunch/checkout-session")
+    public ResponseEntity<String> createCheckoutSession(@RequestBody Map<String, Object> requestBody) {
         try {
             long quantity = Long.parseLong(requestBody.get("quantity").toString());
-            String redirectDomain = "http://" + frontendIp + ":4200";
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(redirectDomain + "/payment/success")
-                    .setCancelUrl(redirectDomain + "/payment/canceled")
+                    .setInvoiceCreation(
+                            SessionCreateParams.InvoiceCreation.builder().setEnabled(true).build()
+                    )
+                    .setSuccessUrl(frontendUrl + "/payment/success")
+                    .setCancelUrl(frontendUrl + "/payment/canceled")
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
                                     .setQuantity(quantity)
@@ -39,7 +46,6 @@ public class StripeController {
                                     .build()
                     )
                     .build();
-
             Session session = Session.create(params);
             return ResponseEntity.ok(session.getUrl());
         } catch (StripeException e) {
@@ -48,5 +54,25 @@ public class StripeController {
         }
     }
 
-
+    @PostMapping("/lunches/subscription/checkout-session")
+    public ResponseEntity<String> createCheckoutSessionMonthSubscription() {
+        try {
+            SessionCreateParams params = SessionCreateParams.builder()
+                    .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+                    .setSuccessUrl(frontendUrl + "/payment/success")
+                    .setCancelUrl(frontendUrl + "/payment/canceled")
+                    .addLineItem(
+                            SessionCreateParams.LineItem.builder()
+                                    .setQuantity(1L)
+                                    .setPrice("price_1Qx1Q5FaSQm5txzCx5Qcwu0r")
+                                    .build()
+                    )
+                    .build();
+            Session session = Session.create(params);
+            return ResponseEntity.ok(session.getUrl());
+        } catch (StripeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating checkout session: " + e.getMessage());
+        }
+    }
 }
