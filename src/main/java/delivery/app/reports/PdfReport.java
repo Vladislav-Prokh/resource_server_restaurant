@@ -59,7 +59,6 @@ public class PdfReport extends Report{
     private static Paragraph getStatisticParagraph(List<Order> orders, Font textFont) {
         Map<LocalDateTime, List<Order>> groupedByDate = orders.stream()
                 .collect(Collectors.groupingBy(Order::getCreatedAt));
-
         int totalOrders = orders.size();
         float totalSum = 0.0f;
         for(Order order : orders){

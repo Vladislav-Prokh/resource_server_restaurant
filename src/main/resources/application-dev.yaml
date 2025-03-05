@@ -13,3 +13,6 @@ urls:
     authServer: auth
 
 
+server:
+  port: 8080
+  locale: uk

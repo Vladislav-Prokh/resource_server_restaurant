@@ -1,5 +1,7 @@
 package delivery.app.controllers;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import delivery.app.dto.LunchRequestDTO;
-import delivery.app.dto.LunchResponseDTO;
 import delivery.app.entities.Beverage;
 import delivery.app.entities.BeverageAdditional;
 import delivery.app.entities.Dessert;
@@ -73,23 +74,22 @@ public class MenuController  {
 	}
 
 	@PostMapping("/beverages")
-	public Beverage addBeverage(@RequestBody Beverage beverage) {
+	public Beverage addBeverage(@Valid @RequestBody Beverage beverage) {
 		return menuService.saveBeverage(beverage);
 	}
-
 	@PostMapping("/meals")
-	public Meal addMeal(@RequestBody Meal meal) {
+	public Meal addMeal(@Valid @RequestBody Meal meal) {
 		return menuService.saveMeal(meal);
 	}
-
 	@PostMapping("/desserts")
-	public Dessert addDessert(@RequestBody Dessert dessert) {
+	public Dessert addDessert(@Valid @RequestBody Dessert dessert) {
 		return menuService.saveDessert(dessert);
 	}
 	@PostMapping("/lunches")
 	public Lunch addLunch(@RequestBody LunchRequestDTO lunch) {
 		return this.menuService.saveLunch(lunch);
 	}
+
 	@DeleteMapping("/beverage-additionals/{additional-id}")
 	public void deleteBeverageAdditional(@PathVariable("additional-id") Long additional_id) {
 		menuService.deleteBeverageAdditional(additional_id);
@@ -110,5 +110,4 @@ public class MenuController  {
 	public void deleteLunch(@PathVariable("lunch-id") Long lunch_id)  {
 		menuService.deleteLunch(lunch_id);
 	}
-
 }

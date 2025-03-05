@@ -1,12 +1,13 @@
 server:
   port: 8080
+  locale: uk
 
 elasticsearch:
   host: http://localhost:9200
 
 payment:
   stripe:
-    secret: sk_test_51QwLozFaSQm5txzCvhHgOGv4kYxl4KxnTGpWUJlElN5Tg720oJrBUWw9sDyjdz3EkvACavfM7PzSVNEiugnilNc7003QlV6oCD
+    secret: replace_it
 
 logging:
   level:
@@ -38,6 +39,5 @@ urls:
   paths:
     authServer: localhost
     frontend: http://localhost:4200
-
 
 
