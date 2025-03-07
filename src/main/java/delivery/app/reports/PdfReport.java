@@ -25,8 +25,8 @@ public class PdfReport extends Report{
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            Font titlesFont = createFont(FontFactory.COURIER, 16);
-            Font textFont = createFont(FontFactory.COURIER, 14);
+            Font titlesFont = createFont(16);
+            Font textFont = createFont(14);
 
             document.add(createParagraph("Report for " + reportRequest.getWaiterEmail(), titlesFont, Element.ALIGN_CENTER));
             document.add(Chunk.NEWLINE);
@@ -34,7 +34,7 @@ public class PdfReport extends Report{
             document.add(Chunk.NEWLINE);
 
             if (!orders.isEmpty()) {
-                document.add(createParagraphTable(orders, textFont));
+                document.add(createParagraphTable(orders));
                 document.add(Chunk.NEWLINE);
                 document.add(getStatisticParagraph(orders, textFont));
                 document.add(Chunk.NEWLINE);
@@ -46,8 +46,8 @@ public class PdfReport extends Report{
         return outputStream.toByteArray();
     }
 
-    private Font createFont(String fontType, int size) {
-        return FontFactory.getFont(fontType, size, BaseColor.BLACK);
+    private Font createFont(int size) {
+        return FontFactory.getFont(FontFactory.COURIER, size, BaseColor.BLACK);
     }
 
     private Paragraph createParagraph(String text, Font font, int alignment) {
@@ -80,7 +80,7 @@ public class PdfReport extends Report{
         return statisticParagraph;
     }
 
-    private PdfPTable createParagraphTable(List<Order> orders, Font textFont){
+    private PdfPTable createParagraphTable(List<Order> orders){
         PdfPTable table = new PdfPTable(3);
         addTableHeader(table);
         Map<LocalDateTime, List<Order>> groupedByDate = orders.stream()

@@ -52,6 +52,4 @@ public class Beverage {
 		this.beveragePrice = beveragePrice;
 	}
 
-    public Beverage(String pepsi, float v) {
-    }
 }

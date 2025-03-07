@@ -19,8 +19,11 @@ import java.util.List;
 @Service
 public class ReportService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
+    public ReportService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     public byte[] createReport(ReportRequest reportRequest) throws DocumentException, IOException {
             List<Order> orders = this.getOrdersByWaiterEmailAndDate(reportRequest);

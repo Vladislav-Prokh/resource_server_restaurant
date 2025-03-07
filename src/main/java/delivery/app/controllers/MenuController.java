@@ -1,6 +1,5 @@
 package delivery.app.controllers;
 
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -77,14 +76,17 @@ public class MenuController  {
 	public Beverage addBeverage(@Valid @RequestBody Beverage beverage) {
 		return menuService.saveBeverage(beverage);
 	}
+
 	@PostMapping("/meals")
 	public Meal addMeal(@Valid @RequestBody Meal meal) {
 		return menuService.saveMeal(meal);
 	}
+
 	@PostMapping("/desserts")
 	public Dessert addDessert(@Valid @RequestBody Dessert dessert) {
 		return menuService.saveDessert(dessert);
 	}
+
 	@PostMapping("/lunches")
 	public Lunch addLunch(@RequestBody LunchRequestDTO lunch) {
 		return this.menuService.saveLunch(lunch);

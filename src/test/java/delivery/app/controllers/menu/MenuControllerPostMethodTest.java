@@ -60,7 +60,7 @@ public class MenuControllerPostMethodTest {
 	    @Test
 	    void testAddBeverage() throws Exception {
 	
-	        Beverage beverage = new Beverage("Coffee",12.0f);
+	        Beverage beverage = new Beverage("Coffee","description",12.0f);
 
 	        mockMvc.perform(post("/menu/beverages")
 	                .contentType(MediaType.APPLICATION_JSON)

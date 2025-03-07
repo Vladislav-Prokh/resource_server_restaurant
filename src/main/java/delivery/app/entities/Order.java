@@ -19,6 +19,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,20 +41,33 @@ public class Order {
 	@Column(name = "orders_id")
 	@JsonProperty("orders_id")
 	private Long orderId;
+
 	@JsonProperty("created_at")
-	@Column(name="created_at")
+	@Column(name = "created_at")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@PastOrPresent(message = "Created at must be in the past or present")
 	private LocalDateTime createdAt;
-	@Column(name="main_course_price")
-	private float mainCoursePrice;
-	@Column(name="dessert_price")
-	private float dessertPrice;
-	@Column(name="beverage_price")
-	private float beveragePrice;
+
+	@Column(name = "main_course_price")
+	@NotNull(message = "Main course price cannot be null")
+	@DecimalMin(value = "0.0", inclusive = false, message = "Main course price must be greater than zero")
+	private Float mainCoursePrice;
+
+	@Column(name = "dessert_price")
+	@NotNull(message = "Dessert price cannot be null")
+	@DecimalMin(value = "0.0", inclusive = false, message = "Dessert price must be greater than zero")
+	private Float dessertPrice;
+
+	@Column(name = "beverage_price")
+	@NotNull(message = "Beverage price cannot be null")
+	@DecimalMin(value = "0.0", inclusive = false, message = "Beverage price must be greater than zero")
+	private Float beveragePrice;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "lunch_id")
+	@NotNull(message = "Lunch cannot be null")
 	private Lunch lunch;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name="main_course_cuisine")
 	private CuisineType mainCourseCuisine;
@@ -64,6 +81,7 @@ public class Order {
 	private Beverage beverage;
 
 	@Column(name = "waiter_email", nullable = false)
+	@Email
 	private String waiterEmail;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)

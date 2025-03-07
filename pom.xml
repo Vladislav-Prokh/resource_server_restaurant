@@ -84,7 +84,7 @@
 			<version>0.18.1</version>
 		</dependency>
 
-		<!-- Spring Security OAuth2 Core (for OIDC, including IdToken) -->
+		<!-- Spring Security OAuth2 Core (for OIDC) -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-core</artifactId>
@@ -122,6 +122,12 @@
 			<artifactId>elasticsearch-rest-high-level-client</artifactId>
 			<version>7.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>8.1.0</version>
+		</dependency>
+
 		<!-- Redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -176,7 +182,6 @@
 			<artifactId>stripe-java</artifactId>
 			<version>28.2.0</version>
 		</dependency>
-
 		<!-- Testing Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -266,6 +271,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

@@ -28,8 +28,7 @@ import java.util.List;
 @Service
 public class MenuService {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	private final BeverageRepository beverageRepository;
 	private final DessertRepository dessertRepository;
@@ -37,12 +36,13 @@ public class MenuService {
 	private final LunchRepository lunchRepository;
 	private final BeverageAdditionalRepository beverageAdditionalRepository;
 	private final String NOT_FOUND_MESSAGE = "Resource not found";
-	public MenuService(BeverageRepository beverageRepository, DessertRepository dessertRepository, MealRepository mealRepository, LunchRepository lunchRepository, BeverageAdditionalRepository beverageAdditionalRepository) {
+	public MenuService(BeverageRepository beverageRepository, DessertRepository dessertRepository, MealRepository mealRepository, LunchRepository lunchRepository, BeverageAdditionalRepository beverageAdditionalRepository, ApplicationEventPublisher applicationEventPublisher) {
 		this.beverageRepository = beverageRepository;
 		this.dessertRepository = dessertRepository;
 		this.mealRepository = mealRepository;
 		this.lunchRepository = lunchRepository;
 		this.beverageAdditionalRepository = beverageAdditionalRepository;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 	public Beverage findBeverageById(Long beverage_id) {
 		return this.beverageRepository.findById(beverage_id)

@@ -11,8 +11,11 @@ import java.io.IOException;
 @Component
 public class LunchCreatedEventListener {
 
-    @Autowired
-    private ElasticService elasticService;
+    private final ElasticService elasticService;
+
+    public LunchCreatedEventListener(ElasticService elasticService) {
+        this.elasticService = elasticService;
+    }
 
     @EventListener
     public void onLunchCreated(LunchCreatedEvent event) throws IOException {

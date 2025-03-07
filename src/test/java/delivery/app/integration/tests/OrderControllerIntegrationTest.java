@@ -45,8 +45,7 @@ public class OrderControllerIntegrationTest{
     
     @Autowired
     private OrderService orderService;
-    
-    private Long employeeId;
+
     private Long beverageId;
     private Long orderId;
 
@@ -55,7 +54,7 @@ public class OrderControllerIntegrationTest{
     public void setUp(TestInfo testInfo) {
   
         String waiterEmail = "email@email.com";
-        Beverage beverage = new Beverage("Coke", 10.f);
+        Beverage beverage = new Beverage("Coke","description", 10.f);
         beverage = menuService.saveBeverage(beverage);
         this.beverageId = beverage.getBeverageId();
         
