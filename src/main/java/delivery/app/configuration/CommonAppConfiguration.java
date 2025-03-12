@@ -33,21 +33,4 @@ public class CommonAppConfiguration {
         return FirebaseApp.initializeApp(options);
     }
 
-    public void sendPushNotification(String token) {
-        Notification notification = Notification.builder().setTitle("trere").setBody("sfsd").build();
-
-        Message message = Message.builder()
-                .setNotification(notification)
-                .setToken(token)
-                .build();
-
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Сообщение отправлено с ID: " + response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

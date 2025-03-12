@@ -7,14 +7,14 @@ elasticsearch:
 
 payment:
   stripe:
-    secret: replace_it
+    secret: replace it
+
 
 logging:
   level:
     org.springframework.web.cors: TRACE
     org.springframework.security: TRACE
     org.springframework.cloud.gateway: TRACE
-
 
 spring:
   application:

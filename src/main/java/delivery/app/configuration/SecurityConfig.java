@@ -44,6 +44,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/elastic/**").hasAnyRole("ADMIN")
 						.requestMatchers(HttpMethod.POST,"/stripe/lunch/checkout-session").permitAll()
 						.requestMatchers(HttpMethod.POST,"/stripe/lunches/subscription/checkout-session").permitAll()
+						.requestMatchers(HttpMethod.POST,"/api/v1/notifications/**").permitAll()
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
 						.anyRequest().authenticated()
