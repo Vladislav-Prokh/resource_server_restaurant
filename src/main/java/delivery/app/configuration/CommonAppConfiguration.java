@@ -2,22 +2,19 @@ package delivery.app.configuration;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Notification;
-import com.google.firebase.messaging.Message;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 @Configuration
 public class CommonAppConfiguration {
 
-
-    public CommonAppConfiguration() {
-    }
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
         InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("restaurant-4e9e0-firebase-adminsdk-fbsvc-cd2bbd9e3e.json");
@@ -31,6 +28,21 @@ public class CommonAppConfiguration {
                 .build();
 
         return FirebaseApp.initializeApp(options);
+    }
+    @Bean
+    public Queue emailQueue() {
+        return new Queue("emailQueue", true);
+    }
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+                                         Jackson2JsonMessageConverter jsonMessageConverter) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter);
+        return rabbitTemplate;
     }
 
 }

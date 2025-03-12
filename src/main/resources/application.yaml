@@ -7,11 +7,13 @@ elasticsearch:
 
 payment:
   stripe:
-    secret: replace it
-
+    secret: replace_it
 
 logging:
   level:
+    org:
+      springframework:
+        security=DEBUG:
     org.springframework.web.cors: TRACE
     org.springframework.security: TRACE
     org.springframework.cloud.gateway: TRACE
@@ -23,6 +25,11 @@ spring:
     redis:
       host: localhost
       port: 6380
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
   datasource:
     url: jdbc:postgresql://localhost:5432/restaurant

@@ -44,7 +44,9 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/elastic/**").hasAnyRole("ADMIN")
 						.requestMatchers(HttpMethod.POST,"/stripe/lunch/checkout-session").permitAll()
 						.requestMatchers(HttpMethod.POST,"/stripe/lunches/subscription/checkout-session").permitAll()
-						.requestMatchers(HttpMethod.POST,"/api/v1/notifications/**").permitAll()
+						.requestMatchers("/orders/queue").permitAll()
+						.requestMatchers("/ws").permitAll()
+						.requestMatchers("/api/v1/notifications/**").hasRole("ADMIN")
 						.requestMatchers("/menu/beverages").permitAll()
 						.requestMatchers("/menu/lunches").permitAll()
 						.anyRequest().authenticated()
@@ -91,6 +93,7 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/login", config);
 		source.registerCorsConfiguration("/oauth2/**", config);
 		source.registerCorsConfiguration("/.well-known/**", config);
+		source.registerCorsConfiguration("/ws", config);
 		return source;
 	}
 

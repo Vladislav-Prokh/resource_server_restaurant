@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import delivery.app.dto.UpdateEmailRequest;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class OrderService {
+
 
 	private final OrderRepository orderRepository;
 	private final BeverageRepository beverageRepository;
@@ -61,10 +65,8 @@ public class OrderService {
 	    }
 	    newOrder = orderRepository.save(newOrder);
 	    List<OrderedAdditionalDTO> orderedAdditionalsDTO = mapToOrderedAdditionalDTOs(orderedAdditionals);
-
 	    return buildOrderResponseDTO(orderDTO, newOrder, lunch, orderedBeverage, servicingWaiter, orderedAdditionalsDTO);
 	}
-
 
 	private Beverage fetchBeverageIfPresent(Long beverageId) {
 	    return beverageId != null ? fetchBeverage(beverageId) : null;
@@ -159,8 +161,7 @@ public class OrderService {
 	        .orElseThrow(() -> new IllegalArgumentException("Invalid additional ID"));
 	    return new OrderedAdditional(beverage, order, beverageAdditional, additionalDTO.getQuantity());
 	}
-	
-	
+
 	public Order findOrderById(Long order_id) {
 		return this.orderRepository.findById(order_id)
 				.orElseThrow(() -> new ResourceNotFoundException("resource not found"));
@@ -175,7 +176,6 @@ public class OrderService {
 	public void deleteOrder(Long orderId) {
 	    Order order = orderRepository.findById(orderId)
 	        .orElseThrow(() -> new EntityNotFoundException("Order not found"));
-
 	    if (order.getOrderedBeverageAdditionals() != null) {
 	        order.getOrderedBeverageAdditionals().clear(); 
 	    }
@@ -183,4 +183,8 @@ public class OrderService {
 	    orderRepository.delete(order);
 	}
 
+	@RabbitListener(queues = "emailQueue")
+	public void processEmail(UpdateEmailRequest request) {
+		this.orderRepository.updateWaiterEmailInOrders(request.getOldEmail(), request.getNewEmail());
+	}
 }

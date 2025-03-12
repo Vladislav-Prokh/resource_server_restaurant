@@ -44,7 +44,6 @@
 			<artifactId>spring-security-oauth2-resource-server</artifactId>
 			<version>6.4.2</version>
 		</dependency>
-
 		<!--  PDF Utils -->
 		<dependency>
 			<groupId>com.itextpdf</groupId>
@@ -55,6 +54,15 @@
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.56</version>
+		</dependency>
+        <!-- RabbitMq -->
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
 		<!-- XLS Utils -->
