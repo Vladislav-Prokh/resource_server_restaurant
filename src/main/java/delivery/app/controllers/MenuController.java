@@ -1,5 +1,6 @@
 package delivery.app.controllers;
 
+import delivery.app.annotations.RequestLimitedEndpoint;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,6 +55,7 @@ public class MenuController  {
 	}
 
 	@GetMapping("/meals")
+	@RequestLimitedEndpoint(rateLimit = 10, log = true)
     public Page<Meal> getMeals(
             @RequestParam(defaultValue = "0") int page, 
             @RequestParam(defaultValue = "10") int size)  {

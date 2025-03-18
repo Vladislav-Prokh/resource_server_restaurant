@@ -99,6 +99,18 @@ public class GlobalExceptionHandler {
 		});
 		return ResponseEntity.badRequest().body(errorDetails);
 	}
+
+	@ExceptionHandler(RequestLimitException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ResponseEntity<?> handleTooManyRequests(RequestLimitException ex) {
+		Map<String, Object> errorDetails = new HashMap<>();
+		errorDetails.put("status", 429);
+		errorDetails.put("message", ex.getMessage());
+		errorDetails.put("timestamp", System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorDetails);
+	}
+
+
 	@Getter
 	@Setter
 	@AllArgsConstructor

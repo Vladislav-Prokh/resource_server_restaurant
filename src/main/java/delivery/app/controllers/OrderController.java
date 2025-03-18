@@ -1,5 +1,6 @@
 package delivery.app.controllers;
 
+import delivery.app.annotations.RequestLimitedEndpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
