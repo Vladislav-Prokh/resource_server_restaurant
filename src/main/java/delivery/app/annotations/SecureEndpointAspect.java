@@ -31,10 +31,16 @@ public class SecureEndpointAspect {
 
     @Around("@annotation(requestLimitedEndpoint)")
     public Object validateSecurity(ProceedingJoinPoint joinPoint, RequestLimitedEndpoint requestLimitedEndpoint) throws Throwable {
+        boolean logEnabled = requestLimitedEndpoint.log();
 
-        if(!this.rateLimiterService.allowRequest(requestLimitedEndpoint.rateLimit())){
-            throw new RequestLimitException("Too many request");
+        if (logEnabled) logger.info("Checking request limit");
+
+        if (!rateLimiterService.allowRequest(requestLimitedEndpoint.rateLimit())) {
+            if (logEnabled) logger.error("Request limit exceeded");
+            throw new RequestLimitException("Too many requests");
         }
+
+        if (logEnabled) logger.info("Request limit passed");
 
         return joinPoint.proceed();
     }
