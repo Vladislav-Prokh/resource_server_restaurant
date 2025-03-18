@@ -41,10 +41,14 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  ai:
+    openai:
+      api-key: replace_it
+      chat:
+        options:
+          model: gpt-4o-mini
 
 urls:
   paths:
     authServer: localhost
     frontend: http://localhost:4200
-
-
